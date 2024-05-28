@@ -18,7 +18,7 @@ const Body = () =>{
   const [restaurants, setRestaurants] = useState(restaurantList);
 
   useEffect(() => {
-    console.log("call this when dependency is changed");
+    console.log("Call this when dependency is changed");
   }, []);
 
     return (
