@@ -14,12 +14,27 @@ function filterData(searchText, restaurants) {
 
 const Body = () =>{
 
-  const [searchText, setSearchInput] = useState("");
   const [restaurants, setRestaurants] = useState(restaurantList);
+  const [searchText, setSearchText] = useState("");
 
   useEffect(() => {
-    console.log("Call this when dependency is changed");
+    //API calls
+    getRestaurants();
   }, []);
+
+  async function getRestaurants() {
+    const data = await fetch(
+      "https://www.swiggy.com/dapi/restaurants/list/v5?lat=12.9351929&lng=77.62448069999999&page_type=DESKTOP_WEB_LISTING"
+    );
+    const json = await data.json();
+    console.log(json);
+    //optional chaining
+    setRestaurants(json?.data?.cards[2]?.data?.data?.cards);
+    // setFilteredRestaurants(json?.data?.cards[2]?.data?.data?.cards);
+  }
+  // if (!allRestaurants) return null;
+
+  console.log("render");
 
     return (
       <>
@@ -43,10 +58,11 @@ const Body = () =>{
           Search
         </button>
       </div>
-      <div className="restraunt-list">
+      <div className="restaurant-list">
       {
         restaurants.map((restaurant) =>{
-          return <RestaurantCard {...restaurant.data} key={restaurant.data.id}/>
+          return (<RestaurantCard {...restaurant.data} key={restaurant.data.id}/>
+        );
         })
       }
       </div>
