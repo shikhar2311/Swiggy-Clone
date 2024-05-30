@@ -2,6 +2,7 @@
 import { restaurantList } from "../constants";
 import RestaurantCard from "./RestaurantCard";
 import { useState, useEffect } from "react";
+import Shimmer from "./shimmer";
 
 function filterData(searchText, restaurants) {
   const filterData = restaurants.filter((restaurant) =>
@@ -11,7 +12,8 @@ function filterData(searchText, restaurants) {
 }
 
 const Body = () => {
-  const [restaurants, setRestaurants] = useState([]);
+  const [allRestaurants, setAllRestaurants] = useState([]);
+  const [filteredRestaurants, setFilteredRestaurants] = useState([]);
   const [searchText, setSearchText] = useState("");
 
   useEffect(() => {
@@ -26,14 +28,20 @@ const Body = () => {
     const json = await data.json();
     console.log(json);
     //optional chaining
-    setRestaurants(json?.data?.cards[2]?.data?.data?.cards);
-    // setFilteredRestaurants(json?.data?.cards[2]?.data?.data?.cards);
+    setAllRestaurants(json?.data?.cards[4]?.card?.card?.gridElements?.infoWithStyle?.restaurants);
+    setFilteredRestaurants(json?.data?.cards[4]?.card?.card?.gridElements?.infoWithStyle?.restaurants);
   }
   // if (!allRestaurants) return null;
 
-  console.log("render");
+  console.log("render"); 
 
-  return (
+  //conditional rendering 
+  //if restaurant is empty => shimmer ui
+  //if restaurant has data => actual data UI
+
+  if (!allRestaurants) return null;
+
+  return (allRestaurants?.length === 0) ? <Shimmer/> : (
     <>
       <div className="search- container">
         <input
@@ -48,17 +56,17 @@ const Body = () => {
         <button
           className="search-btn"
           onClick={() => {
-            const data = filterData(searchText, restaurants);
-            setRestaurants(data);
+            const data = filterData(searchText, allRestaurants);
+            setFilteredRestaurants(data);
           }}
         >
           Search
         </button>
       </div>
       <div className="restaurant-list">
-        {restaurants.map((restaurant) => {
+        {filteredRestaurants.map((restaurant) => {
           return (
-            <RestaurantCard {...restaurant.data} key={restaurant.data.id} />
+            <RestaurantCard {...restaurant.info} key={restaurant.info.id} />
           );
         })}
       </div>

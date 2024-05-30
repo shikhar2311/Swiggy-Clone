@@ -39,7 +39,8 @@
     width: 100%;
 }
 
-.restraunt-list {
+.restaurant-list {
     display: flex;
     flex-wrap: wrap;
+
 }
